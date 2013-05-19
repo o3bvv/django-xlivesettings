@@ -2,7 +2,7 @@ django-xlivesettings
 ====================
 
 
-Synosis
+Synopsis
 -------
 
 django-xlivesettings is a fork of [django-livesettings] provided by [bkroeze]. Why X? Because it's eXtra.
