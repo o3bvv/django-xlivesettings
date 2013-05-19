@@ -37,4 +37,6 @@ setup(
     include_package_data = True,
 )
 
+# I know it's a bad way, but i do not know how to correctly add
+# a remote repository dependency
 os.system("pip install -r requirements.txt")
