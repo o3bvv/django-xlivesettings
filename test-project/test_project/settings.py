@@ -180,10 +180,10 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    },
-    'keyedcache': {
+        'keyedcache': {
             'handlers': ['console'],
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'propagate': True,
+        },
     },
 }
