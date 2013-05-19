@@ -1,0 +1,7 @@
+<html><body>
+<table border="1">
+    <tr><td>Measurement system:</td><td>{{ measurement_system }}</td></tr>
+    <tr><td>Image count:       </td><td>{{ image_count }}</td></tr>
+</table>
+<p>Values <a href='{% url "site_live_settings" %}'>can be modified here</a> if the user has sufficient permissions (xlivesettings_setting:change).</p>
+</body></html>
