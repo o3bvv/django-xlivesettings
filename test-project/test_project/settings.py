@@ -138,6 +138,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'TIMEOUT': 5,
+        'KEY_PREFIX': "",
         # It is high recommended to configure a global cache for multiprocess
         # servers, because other processes would not be notified about new
         # values with LocMemCache. !!
