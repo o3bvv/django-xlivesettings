@@ -186,5 +186,10 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'xlivesettings': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }

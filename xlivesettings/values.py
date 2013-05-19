@@ -226,9 +226,8 @@ class Value(object):
                 work = []
                 for x in self.choices:
                     if x[0] in self.default:
-                        work.append('%s' % smart_str(x[1]))
-                note = gettext('Default value: ') + ", ".join(work)
-
+                        work.append(unicode(smart_str(x[1])))
+                note = _('Default value: ') + ", ".join(work)
             else:
                 note = _("Default value: %s") % unicode(self.default)
 
