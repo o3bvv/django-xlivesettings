@@ -88,8 +88,10 @@
                         </fieldset>
         </div>
     <br class="clear:both;" />
+    {% block control_buttons %}
     <input type="submit" value="{% trans 'Update Settings' %}" />
-    <a href="{% url 'settings_export' %}" class="grp-button">{% trans 'Export' %}</a>
+    <a href="{% url 'settings_export' %}">{% trans 'Export' %}</a>
+    {% endblock %}
     </form>
     {% else %}
         <p>{% trans "There are no values to configure or you don't have permission to edit them." %}</p>

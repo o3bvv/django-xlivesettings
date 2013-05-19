@@ -1,3 +1,4 @@
+import os
 from setuptools import setup, find_packages
 
 VERSION = (1, 0, 0)
@@ -34,11 +35,6 @@ setup(
         "Framework :: Django"],
     packages = find_packages(),
     include_package_data = True,
-    setup_requires=[
-        "setuptools_git",
-        "django-keyedcache",
-    ],
-    dependency_links = [
-        'https://bitbucket.org/oblalex/django-keyedcache/get/tip.tar.gz#egg=django-keyedcache'
-    ],
 )
+
+os.system("pip install -r requirements.txt")
