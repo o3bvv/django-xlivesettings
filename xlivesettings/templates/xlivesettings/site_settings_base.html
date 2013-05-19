@@ -1,0 +1,101 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static config_tags %}{% load url from future %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "xlivesettings/style.css" %}" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" media="all" />
+{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/jquery.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/collapse.js" %}"></script>
+<script type="text/javascript" src="{% static "xlivesettings/init.js" %}"></script>
+
+<script>(function($){jQuery = $.noConflict(true);})(django.jQuery);</script>
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+{% endblock %}
+
+{% block userlinks %}<a href="{% url 'admin:index' %}password_change/">{% trans 'Change password' %}</a> / <a href="{% url 'admin:index' %}logout/">{% trans 'Log out' %}</a>{% endblock %}
+
+{% block messages %}
+    {% if messages %}
+    <ul class="messagelist">{% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}</ul>
+    {% endif %}
+{% endblock messages %}
+
+{% block content %}
+<span style="clear: both;"></span>
+<div id="content-main">
+{% if not use_db %}
+    <p>{% trans "Livesettings are disabled for this site." %}</p>
+    <p>{% trans "All configuration options must be edited in the site settings.py file" %}</p>
+    </div>
+    {% admin_site_views 'site_live_settings' %}
+{% else %}
+    {% if form.errors %}
+        <p class="errornote">
+        {% blocktrans count form.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+        </p>
+    {% endif %}
+    {% if form.fields %}
+    <form method="post" id="settingsform">{% csrf_token %}
+        <div id="tabs">
+            <ul id="tabs-menu">
+            </ul>
+            {% for field in form %}
+                {% if field.is_hidden %}
+                    <tr style="display: none;"><td>{{ field }}</td></tr>
+                {% else %}
+                    {% ifchanged field.field.group %}{% with field.field.group as group %}
+                        {% if not forloop.first %}
+                                    </table>
+                                </div>
+                            </fieldset>
+                        {% endif %}
+                        <li class="tabs-menu-element"><a href="#tabs-{{ group.key }}">{{ group.name }}</a></li>
+                        <fieldset class="module collapse" style="border:none;">
+                            <div id="tabs-{{ group.key }}">
+                                <table summary="{% blocktrans with group.name as name %}Group settings: {{ name }}{% endblocktrans %}" style="width: 100%;">
+                    {% endwith %}{% endifchanged %}
+                    {% if field.errors %}
+                        <tr class="error">
+                            <td colspan="2">{{ field.errors }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr{% if field.errors %} class="error"{% endif %}>
+                        <td style="width: 50%;">
+                        {{ field.label_tag }}
+                        {% if field.help_text %}
+                            <p class="help">{{ field.help_text|break_at:40|safe }}</p>
+                        {% endif %}
+                        {% if field.field.default_text %}
+                            <p class="help">{{ field.field.default_text|break_at:40}}</p>
+                        {% endif %}
+                        </td>
+                        <td>{{ field }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+                                </table>
+                            </div>
+                        </fieldset>
+        </div>
+    <br class="clear:both;" />
+    {% block control_buttons %}
+    <input type="submit" value="{% trans 'Update Settings' %}" />
+    <a href="{% url 'settings_export' %}">{% trans 'Export' %}</a>
+    {% endblock %}
+    </form>
+    {% else %}
+        <p>{% trans "There are no values to configure or you don't have permission to edit them." %}</p>
+    {% endif %}
+{% endif %}
+</div>
+{% endblock %}
