@@ -33,6 +33,11 @@ setup(
         "Programming Language :: Python",
         "Framework :: Django"],
     packages = find_packages(),
-    setup_requires=["setuptools_git"],
     include_package_data = True,
+    setup_requires=[
+        "setuptools_hg",
+        "setuptools_git",
+        "django-keyedcache",
+    ],
+    dependency_links = ['hg+http://oblalex@bitbucket.org/oblalex/django-keyedcache#egg=django-keyedcache'],
 )
