@@ -17,5 +17,16 @@ Main differences
 * More adapted for I18N code.
 * Settings groups are displayed via jQuery tabs.
 
+Tabs example (from test-project):
+
+![Tabs example](http://imageshack.us/a/img822/6467/snapshot42.png)
+
+[Real project] example (flavoured with [Grappelli]):
+
+![Tabs example with Grappelli](http://imageshack.us/a/img543/915/snapshot43.png)
+
+
 [django-livesettings]:https://bitbucket.org/bkroeze/django-livesettings
 [bkroeze]:https://bitbucket.org/bkroeze
+[Real project]:http://goo.gl/2SWQ7
+[Grappelli]:http://grappelliproject.com/
