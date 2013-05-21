@@ -153,6 +153,10 @@ def config_get(group, key):
         log.debug('SettingNotSet: %s.%s', group, key)
         raise
 
+def config_get_localized(group, key, lang_code):
+    """Get a localized configuration setting"""
+    return dict(config_get(group, key).value)[lang_code]
+
 def config_get_group(group):
     return ConfigurationSettings()[group]
 
