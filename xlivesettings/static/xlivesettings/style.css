@@ -3,3 +3,19 @@
     font-weight: bold;
     font-size: 12px;
 }
+
+.xsettings-multi-input
+{
+    display: table;
+}
+
+.xsettings-multi-input label
+{
+    display: table-row;
+}
+
+.xsettings-multi-input input
+{
+    display: table-row;
+    margin-bottom: 5px;
+}

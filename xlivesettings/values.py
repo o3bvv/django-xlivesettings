@@ -5,6 +5,7 @@ http://code.google.com/p/django-values/
 import datetime
 import logging
 import signals
+import ast
 
 from decimal import Decimal
 from django import forms
@@ -18,11 +19,14 @@ from django.utils.translation import gettext, ugettext_lazy as _
 
 from xlivesettings.models import find_setting, LongSetting, Setting, SettingNotSet
 from xlivesettings.overrides import get_overrides
+from xlivesettings import settings as x_setts
 from xlivesettings.utils import load_module, is_string_like, is_list_or_tuple
 
 __all__ = ['BASE_GROUP', 'ConfigurationGroup', 'Value', 'BooleanValue', 'DecimalValue', 'DurationValue',
       'FloatValue', 'IntegerValue', 'ModuleValue', 'PercentValue', 'PositiveIntegerValue', 'SortedDotDict',
-      'StringValue', 'LongStringValue', 'MultipleStringValue', 'LongMultipleStringValue', 'PasswordValue']
+      'StringValue', 'LongStringValue', 'MultipleStringValue', 'LongMultipleStringValue', 'PasswordValue',
+      'LocalizedStringValue',
+]
 
 _WARN = {}
 try:
@@ -159,11 +163,9 @@ class Value(object):
             self.requires = group.requires
             self.requires_value = group.requires_value
 
-        if kwargs.has_key('default'):
+        self.use_default = kwargs.has_key('default')
+        if self.use_default:
             self.default = kwargs.pop('default')
-            self.use_default = True
-        else:
-            self.use_default = False
 
         self.creation_counter = Value.creation_counter
         Value.creation_counter += 1
@@ -329,6 +331,7 @@ class Value(object):
                     raise SettingNotSet("Startup error, couldn't load %s.%s" %(self.group.key, self.key))
             else:
                 is_setting_initializing = False
+
         return val
 
     def update(self, value):
@@ -688,7 +691,6 @@ class MultipleStringValue(Value):
                     log.warning('Could not decode returning empty list: %s', value)
                     return []
 
-
     to_editor = to_python
 
 class LongMultipleStringValue(MultipleStringValue):
@@ -731,3 +733,99 @@ class ModuleValue(Value):
             value = ""
         return value
 
+class LocalizedStringValueFieldWidget(forms.MultiWidget):
+    def __init__(self, langs=[], attrs=None):
+        widgets = []
+        for lang in langs:
+            widget = forms.TextInput(attrs=attrs)
+            widget.lang = lang
+            widgets.append(widget)
+        super(LocalizedStringValueFieldWidget, self).__init__(widgets, attrs)
+
+    def value_from_datadict(self, data, files, name):
+        try:
+            return data.get(name, None).rsplit()
+        except AttributeError:
+            return [widget.value_from_datadict(data, files, name + '_%s' % i) for i, widget in enumerate(self.widgets)]
+
+    def decompress(self, value):
+        return dict(value) if value else {}
+
+    def render(self, name, value, attrs=None):
+        if self.is_localized:
+            for widget in self.widgets:
+                widget.is_localized = self.is_localized
+        # value is a list of values, each corresponding to a widget
+        # in self.widgets.
+        if not isinstance(value, dict):
+            value = self.decompress(value)
+        output = []
+        final_attrs = self.build_attrs(attrs)
+        id_ = final_attrs.get('id', None)
+        for i, widget in enumerate(self.widgets):
+            try:
+                lang_code = widget.lang
+                widget_label = unicode(x_setts.LANGUAGES_DICT.get(lang_code, lang_code))
+                widget_value = value[lang_code]
+            except:
+                widget_label, widget_value, lang_code = None, None, None
+            if id_:
+                final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
+
+            output.append('<div class="form-row xsettings-multi-input">')
+            output.append('<label for="%s">%s:</label>' % (final_attrs['id'], widget_label))
+            output.append(widget.render(name + '_%s' % i, widget_value, final_attrs))
+            output.append('</div>')
+
+        return mark_safe(self.format_output(output))
+
+class LocalizedStringValueField(forms.MultiValueField):
+    def __init__(self, langs=[], *args, **kwargs):
+        self.langs = langs
+        fields = [forms.CharField() for _ in langs]
+        widget = LocalizedStringValueFieldWidget(langs)
+        super(LocalizedStringValueField, self).__init__(fields=fields, widget=widget, *args, **kwargs)
+
+    def compress(self, values):
+        return tuple(zip(self.langs, values))
+
+class LocalizedStringValue(Value):
+    def __init__(self, group, key, **kwargs):
+        super(LocalizedStringValue, self).__init__(group, key, **kwargs)
+        self.langs = [x[0] for x in sorted(self.default)]
+
+    def field(self, **kwargs):
+        return LocalizedStringValueField(langs=self.langs, **kwargs)
+
+    def _default_text(self):
+        if not self.use_default:
+            note = ""
+        else:
+            if self.default == "":
+                note = _('Default value: ""')
+            elif self.langs:
+                note = _('Default values: ') + ", ".join([
+                    "%s: %s" % (unicode(x_setts.LANGUAGES_DICT.get(x[0], x[0])), unicode(x[1]))
+                    for x in self.default])
+            else:
+                note = _("Default value: %s") % unicode(self.default)
+        return note
+
+    default_text = property(fget=_default_text)
+
+    def to_python(self, value):
+        if not value or value == NOTSET:
+            return []
+        if is_list_or_tuple(value):
+            return value
+        else:
+            try:
+                return simplejson.loads(value)
+            except:
+                if is_string_like(value):
+                    return ast.literal_eval(value)
+                else:
+                    log.warning('Could not decode returning empty list: %s', value)
+                    return []
+
+    to_editor = to_python

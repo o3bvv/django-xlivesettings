@@ -1,6 +1,11 @@
+# -*- coding: utf-8 -*-
+
 # Django settings for test_project project.
+from __future__ import unicode_literals
 
 import os
+
+from django.utils.translation import ugettext_lazy as _
 
 DIRNAME = os.path.dirname(__file__)
 
@@ -35,7 +40,12 @@ TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = (
+    ('en', _(u'English')),
+    ('ru', _(u'Russian')),
+)
 
 SITE_ID = 1
 

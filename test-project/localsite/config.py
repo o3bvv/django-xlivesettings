@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 """Examples for xlivesettings"""
-
+from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 
 from xlivesettings.values import *
@@ -49,7 +50,7 @@ GR1_BOX = ConfigurationGroup('gr_box', _('Example of different boxes'), ordering
 
 config_register_list(
 
-    # Texbox - string or many other types
+    # Textbox - string or many other types
     StringValue( GR1_BOX, 'my_StringValue', description='Textbox', ordering=1, default='Orange',
         help_text='StringValue and many different types looks similar'),
 
@@ -119,10 +120,20 @@ config_register_list(
         default=['blablabla_b', 'blablabla_c'],
         choices= tuple(('blablabla_' + x, 15 * x) for x in 'abcdefghijklmnopqrstuvwxyz'),
         # This example requires storage in long string if all options are selected.
-        ),
+    ),
     # Combined Long and Multiple StringValue
-)
 
+    LocalizedStringValue(
+        GR_MORE,
+        'my_LocalizedStringValue',
+        description = 'Localized string value',
+        ordering = 7,
+        default = (
+            ('en', u"My localized string"),
+            ('ru', u"Моя локализированная строка"),
+        ),
+    ),
+)
 
 # Example of conditional items (fiels or modules) that can by enabled/disabled
 # by selecting in some choises list.
