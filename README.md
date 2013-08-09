@@ -4,6 +4,7 @@ django-xlivesettings
 1. [Synopsis](#synopsis)
 1. [Main differences](#main-differences)
 1. [Installation](#installation)
+1. [Usage](#usage)
 1. [Dependensies](#dependensies)
 1. [How does it look](#how-does-it-look)
   1. [Tabs](#tabs-from-test-project)
