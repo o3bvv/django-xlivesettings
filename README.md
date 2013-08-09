@@ -28,16 +28,28 @@ Main differences
 Installation
 ------------
 
-    # TODO:
-    
+To install, either as [PyPi package](https://pypi.python.org/pypi/django-xlivesettings):
+
+    pip install django-xlivesettings
+
+or from ypur local sources:
+
+    python setup.py install
+
 Dependensies
 ------------
 
 As this is a fork of another project, it inherits primary dependencies:
 
-1. [django-keyedcache](https://bitbucket.org/oblalex/django-keyedcache/wiki/Home)
+1. [django-keyedcache](https://pypi.python.org/pypi/django-keyedcache/)
 
 No new dependencies were added.
+
+
+Usage
+-----
+
+    # TODO:
 
 How does it look
 ----------------

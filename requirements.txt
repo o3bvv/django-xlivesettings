@@ -1,5 +1,0 @@
-# Install all required third-party applications in a row using pip. Example:
-#
-#  pip install -r requirements.txt
-
--e hg+http://oblalex@bitbucket.org/oblalex/django-keyedcache#egg=django-keyedcache

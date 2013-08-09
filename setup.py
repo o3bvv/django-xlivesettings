@@ -11,6 +11,10 @@ else:
 
 version= str_version
 
+install_requires = [
+    "django-keyedcache>=1.4-6",
+]
+
 setup(
     name = "django-xlivesettings",
     version = version,
@@ -35,8 +39,5 @@ setup(
         "Framework :: Django"],
     packages = find_packages(),
     include_package_data = True,
+    install_requires=install_requires,
 )
-
-# I know it's a bad way, but i do not know how to correctly add
-# a remote repository dependency
-os.system("pip install -r requirements.txt")
