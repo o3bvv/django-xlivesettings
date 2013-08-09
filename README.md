@@ -28,11 +28,11 @@ Main differences
 Installation
 ------------
 
-To install, either as [PyPi package](https://pypi.python.org/pypi/django-xlivesettings):
+You can install either as [PyPi package](https://pypi.python.org/pypi/django-xlivesettings):
 
     pip install django-xlivesettings
 
-or from ypur local sources:
+or from your local sources:
 
     python setup.py install
 
